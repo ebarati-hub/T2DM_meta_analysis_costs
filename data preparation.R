@@ -10,24 +10,6 @@ df$se <- ifelse(is.na(df$se) & !is.na(df$sd), df$sd/sqrt(df$n), df$se)
 dim(df)
 sum(is.na(df$sd))
 #Conversion, Adjustment:
-df$IIF_GDPD  <- as.numeric(as.character(df$IIF_GDPD))
 df$mean_converted = df$mean * df$IIF_GDPD* df$ICF_CAD*df$Exchange_Rate
 df$sd_converted = df$sd * df$IIF_GDPD* df$ICF_CAD*df$Exchange_Rate
 df$se_converted = df$se* df$IIF_GDPD* df$ICF_CAD*df$Exchange_Rate
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
