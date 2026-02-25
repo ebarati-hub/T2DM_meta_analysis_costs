@@ -18,10 +18,6 @@ df <- all %>%
                   population =="noDM")
 
 
-
-# I want to keep only adjusted values from study 113
-df <- df %>%
-  dplyr::filter(!(s_id == 113 & ADJUSTED == "No"))
 # Study 113 reports both short-term (ST) and long-term (LT) disability costs.
 # Plan: pool ST and LT estimates to create a single combined estimate.
 # Approach:
@@ -44,30 +40,6 @@ n_cases113 <- min(pair_cases113$n)
 n_cases113 <- as.numeric(as.character(n_cases113))
 
 
-#Change the format from character to numeric
-df$IIF_GDPD <- as.numeric(as.character(df$IIF_GDPD))
-df$ICF_CAD <- as.numeric(as.character(df$ICF_CAD))
-df$Exchange_Rate <- as.numeric(as.character(df$Exchange_Rate))
-df$n <- as.numeric(as.character(df$n))
-# add these as a new row
-df <- df %>% 
-  add_row(
-    s_id = 113,
-    year = 2022,
-    population = "T2DM",
-    mean = mean_total_cases113,
-    se = se_total_cases113,
-    n = n_cases113,
-    cost_type = "Benefits",
-    cost_subtype = "Disability (LT+ST)",
-    complication_cat = "general",
-    ADJUSTED = "Yes",
-    author = "Park",
-    IIF_GDPD = 1.2,
-    ICF_CAD = 1.21,
-    Exchange_Rate = 1,
-    IC = "ready"
-  )
 # Do the same for noDM
 r <- 0.8 
 pair_control113 <- subset(df,
@@ -78,33 +50,7 @@ pair_control113 <- subset(df,
 mean_total_control113 <- sum(pair_control113$mean, na.rm = TRUE)
 se_total_control113   <- with(pair_control113, sqrt(se[1]^2 + se[2]^2 + 2*r*se[1]*se[2]))
 n_control113 <- min(pair_control113$n)
-n_control113 <- as.numeric(as.character(n_control113))
 
-
-
-df$IIF_GDPD <- as.numeric(as.character(df$IIF_GDPD))
-df$ICF_CAD <- as.numeric(as.character(df$ICF_CAD))
-df$Exchange_Rate <- as.numeric(as.character(df$Exchange_Rate))
-df$n <- as.numeric(as.character(df$n))
-# add these as a new row
-df <- df %>% 
-  add_row(
-    s_id = 113,
-    year = 2022,
-    population = "noDM",
-    mean = mean_total_control113,
-    se = se_total_control113,
-    n = n_control113,
-    cost_type = "Benefits",
-    cost_subtype = "Disability (LT+ST)",
-    complication_cat = "general",
-    ADJUSTED = "Yes",
-    author = "Park",
-    IIF_GDPD = 1.2,
-    ICF_CAD = 1.21,
-    Exchange_Rate = 1,
-    IC = "ready"
-  )
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # study 599 reports cost  from 2006 to 2015. We must first do inflation-adjustment and 
@@ -336,6 +282,7 @@ summary_table <- data.frame(
 print(summary_table)
 library(writexl)
 write_xlsx(summary_table, "pooled_cost_results.xlsx")
+
 
 
 
